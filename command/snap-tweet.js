@@ -7,7 +7,7 @@ module.exports = {
         description: '指定したツイートのスクリーンショットを撮影して送信します。',
         options: [
             {
-                type: 3, // STRING
+                type: 3, 
                 name: 'url',
                 description: 'スクリーンショットを撮影するツイートのURLを入力してください。',
                 required: true,
@@ -17,14 +17,14 @@ module.exports = {
     async execute(interaction) {
         const tweetUrl = interaction.options.getString('url');
 
-        // ツイートURLのバリデーション twitter.com x.com
+        // ツイートURLを正規表現で判定 by gh copilot
         const tweetUrlPattern = /^https?:\/\/(www\.)?(twitter|x)\.com\/\w+\/status\/\d+/;
         if (!tweetUrlPattern.test(tweetUrl)) {
             await interaction.reply({ content: '有効なツイートのURLを入力してください。', flags: MessageFlags.Ephemeral });
             return;
         }
 
-        await interaction.deferReply(); // 処理に時間がかかる場合に使用
+        await interaction.deferReply();
 
         try {
             const snap = getSnapAppRender({ url: tweetUrl});

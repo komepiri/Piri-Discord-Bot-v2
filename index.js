@@ -81,7 +81,37 @@ client.on('clientReady', async () => {
         ];
         const activity = activities[Math.floor(Math.random() * activities.length)];
         client.user.setActivity(activity);
-    }, 60 * 1000); // 1分ごとにステータスを更新
+    }, 60 * 1000);
+});
+
+// 時報
+client.on('clientReady', async () => {
+    const file = path.join(__dirname, 'time-signal-channels.json');
+    setInterval(async () => {
+        const now = new Date();
+        if (now.getMinutes() === 0 && now.getSeconds() === 0) {
+            if (fs.existsSync(file)) {
+                const fileContent = fs.readFileSync(file);
+                const data = JSON.parse(fileContent);
+                for (const guildId in data) {
+                    const channelId = data[guildId];
+                    const guild = client.guilds.cache.get(guildId);
+                    if (guild) {
+                        const channel = guild.channels.cache.get(channelId);
+                        if (channel) {
+                            const date = now.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+                            const time = now.toLocaleTimeString('ja-JP', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit' });
+                            if (now.getHours() === 0) {
+                                await channel.send(`# 時報\n**${date} ${time}**になったことをお知らせします。\nチャット広場閉鎖まで**あと${new Date('2025-12-31T23:59:59Z') - now <= 0 ? '0日' : Math.floor((new Date('2025-12-31T23:59:59Z') - now) / (1000 * 60 * 60 * 24)) + '日'}**`);
+                            } else {
+                                await channel.send(`# 時報\n**${date} ${time}**になったことをお知らせします。`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, 1000); 
 });
 
 client.login(process.env.DISCORD_TOKEN);

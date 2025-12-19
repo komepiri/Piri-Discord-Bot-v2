@@ -5,9 +5,8 @@ module.exports = {
         name: 'admincmd',
         description: 'Bot管理者専用コマンドのグループです。',
         options: [
-            // Botが現在加入しているサーバーーの一覧を取得するサブコマンド
             {
-                type: 1, // SUB_COMMAND
+                type: 1, 
                 name: 'list-servers',
                 description: 'Botが現在加入しているサーバーの一覧を取得します。',
             },
@@ -17,7 +16,7 @@ module.exports = {
                 description: '指定されたサーバーからBotを退出させます。',
                 options: [
                     {
-                        type: 3, // STRING
+                        type: 3, 
                         name: 'server-id',
                         description: '退出させたいサーバーのIDを入力してください。',
                         required: true,
@@ -29,10 +28,8 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id !== process.env.BOT_OWNER_ID) return await interaction.reply({ content: 'このコマンドを実行する権限がありません。', flags: MessageFlags.Ephemeral });
         if (interaction.options.getSubcommand() === 'list-servers') {
-            // Botが加入しているサーバーの一覧を取得
             const guilds = interaction.client.guilds.cache.map(guild => `${guild.name} (ID: ${guild.id})`).join('\n');
 
-            // サーバー一覧を返信
             const embed = {
                 title: 'Botが加入しているサーバー一覧',
                 description: guilds || '現在、Botはどのサーバーにも加入していません。',
